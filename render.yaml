@@ -1,0 +1,26 @@
+services:
+  - type: worker
+    name: MangoTrader
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scheduler.py
+    plan: starter
+    region: oregon
+    envVars:
+      - key: ALPACA_KEY_ID
+        sync: false
+      - key: ALPACA_SECRET_KEY
+        sync: false
+      - key: ALPACA_BASE_URL
+        value: https://paper-api.alpaca.markets
+      - key: POLYGON_KEY
+        sync: false
+      - key: PERPLEXITY_KEY
+        sync: false
+      - key: SEC_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GOOGLE_CSE_ID
+        sync: false
+
