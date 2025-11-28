@@ -32,6 +32,8 @@ services:
     plan: starter
     region: oregon
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
       - key: ALPACA_KEY_ID
         sync: false
       - key: ALPACA_SECRET_KEY
