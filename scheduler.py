@@ -144,6 +144,14 @@ def main():
         name='Self-improvement engine'
     )
     
+    # 00:25 next day - Self analyze
+    scheduler.add_job(
+        lambda: run_task('self_analyze'),
+        CronTrigger(hour=0, minute=25),
+        id='self_analyze',
+        name='Daily self-analysis'
+    )
+    
     logger.info("Scheduler configured. Jobs:")
     for job in scheduler.get_jobs():
         logger.info(f"  - {job.name} ({job.id}): {job.next_run_time}")

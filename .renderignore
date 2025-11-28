@@ -1,0 +1,17 @@
+# Files to ignore when deploying to Render
+secrets.env
+secrets.example.env
+*.log
+logs/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.git/
+.gitignore
+README.md
+DEPLOY.md
+test_setup.py
+verify_setup.py
+instructions.md
+
