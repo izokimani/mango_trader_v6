@@ -4,7 +4,7 @@ Runs at 23:50 UTC daily
 """
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from polygon.rest import RESTClient
 from dotenv import load_dotenv
 import pandas as pd
@@ -14,20 +14,47 @@ import json
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from src.utils import COINS, get_db_connection, get_utc_now, format_date, get_logger
 
-if os.path.exists('secrets.env'):
+# Load environment variables - try multiple paths
+script_dir = os.path.dirname(os.path.dirname(__file__))
+secrets_path = os.path.join(script_dir, 'secrets.env')
+if os.path.exists(secrets_path):
+    load_dotenv(secrets_path)
+elif os.path.exists('secrets.env'):
     load_dotenv('secrets.env')
 else:
     load_dotenv()
+
 logger = get_logger('fetch_data')
+
+# Verify API key is loaded
+polygon_key = os.getenv('POLYGON_KEY')
+if not polygon_key:
+    logger.error("POLYGON_KEY not found in environment variables!")
+    logger.error(f"Current working directory: {os.getcwd()}")
+    logger.error(f"Script directory: {script_dir}")
+    logger.error(f"Secrets path checked: {secrets_path}")
+    logger.error(f"Secrets file exists: {os.path.exists(secrets_path)}")
+    raise ValueError("POLYGON_KEY environment variable is not set")
+
+# Trim whitespace from API key (common issue with .env files)
+polygon_key = polygon_key.strip()
+if len(polygon_key) < 10:
+    logger.error(f"POLYGON_KEY appears to be invalid (too short: {len(polygon_key)} chars)")
+    raise ValueError("POLYGON_KEY appears to be invalid")
 
 def fetch_polygon_data(coin, hours=72):
     """Fetch price and volume data for a coin"""
-    client = RESTClient(os.getenv('POLYGON_KEY'))
+    # Use the module-level polygon_key that was already validated
+    try:
+        client = RESTClient(polygon_key)
+    except Exception as e:
+        logger.error(f"Failed to create Polygon RESTClient: {e}")
+        raise
     
     # Convert coin symbol (e.g., BTCUSD -> X:BTCUSD)
     polygon_symbol = f"X:{coin}"
     
-    end_time = datetime.utcnow()
+    end_time = datetime.now(timezone.utc)
     start_time = end_time - timedelta(hours=hours)
     
     try:
@@ -62,7 +89,15 @@ def fetch_polygon_data(coin, hours=72):
         
         return df
     except Exception as e:
-        logger.error(f"Error fetching data for {coin}: {e}")
+        error_msg = str(e)
+        logger.error(f"Error fetching data for {coin}: {error_msg}")
+        
+        # Check for specific API key errors
+        if "Unknown API Key" in error_msg or "Invalid API Key" in error_msg or "401" in error_msg:
+            logger.error("This appears to be an API key authentication error.")
+            logger.error("Please verify your POLYGON_KEY in secrets.env is valid and active.")
+            logger.error("You can check your API key status at: https://polygon.io/dashboard/api-keys")
+        
         return None
 
 def calculate_returns_and_indicators(df):
