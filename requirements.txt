@@ -10,4 +10,5 @@ ta==0.11.0
 APScheduler==3.10.4
 Flask==3.0.0
 setuptools
+aiohttp>=3.9.0
 
