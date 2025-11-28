@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import json
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from src.utils import COINS, get_db_connection, get_utc_now, format_date, get_logger
+from src.utils import COINS, get_db_connection, get_utc_now, format_date, get_logger, init_database
 
 if os.path.exists('secrets.env'):
     load_dotenv('secrets.env')
@@ -20,7 +20,7 @@ logger = get_logger('record_results')
 
 def fetch_actual_returns():
     """Fetch actual 24h returns for all coins"""
-    from polygon import RESTClient
+    from polygon.rest import RESTClient
     from datetime import datetime, timedelta
     
     client = RESTClient(os.getenv('POLYGON_KEY'))
@@ -102,6 +102,7 @@ def load_yesterday_data():
 
 def record_results(chosen_coin, actual_return, rank, all_returns, price_data, sentiment_data):
     """Record all results in database"""
+    init_database()
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -168,6 +169,9 @@ def record_results(chosen_coin, actual_return, rank, all_returns, price_data, se
 def main():
     """Main function"""
     logger.info(f"Recording results at {get_utc_now()}")
+    
+    # Initialize database first
+    init_database()
     
     # Note: Position should have been sold at 23:59 by 06_sell_position.py
     # This script just records the results

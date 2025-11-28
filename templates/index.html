@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>🥭 MangoTrades V6 - Crypto Trading Bot Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🥭 MangoTrades V6 Dashboard</h1>
+            <p class="subtitle">Self-Learning Crypto Trading Bot | 16 Cryptocurrencies</p>
+            <div class="header-actions">
+                <button id="refreshBtn" class="btn btn-primary">🔄 Refresh</button>
+                <span id="lastUpdate" class="timestamp"></span>
+            </div>
+        </header>
+
+        <!-- System Health -->
+        <section class="card">
+            <h2>System Health</h2>
+            <div id="healthStatus" class="health-status">
+                <div class="loading">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Tracked Coins -->
+        <section class="card">
+            <h2>📊 Tracked Cryptocurrencies</h2>
+            <div id="trackedCoins" class="coins-grid">
+                <div class="loading">Loading coin list...</div>
+            </div>
+        </section>
+
+        <!-- Performance Metrics -->
+        <section class="card">
+            <h2>Performance Metrics</h2>
+            <div id="metrics" class="metrics-grid">
+                <div class="loading">Loading metrics...</div>
+            </div>
+        </section>
+
+        <!-- Recent Trades -->
+        <section class="card">
+            <h2>Recent Trades</h2>
+            <div id="recentTrades" class="table-container">
+                <div class="loading">Loading trades...</div>
+            </div>
+        </section>
+
+        <!-- Pending Trades -->
+        <section class="card" id="pendingSection" style="display: none;">
+            <h2>Pending Trades</h2>
+            <div id="pendingTrades" class="table-container">
+                <div class="loading">Loading pending trades...</div>
+            </div>
+        </section>
+
+        <!-- Model History -->
+        <section class="card">
+            <h2>Model Version History</h2>
+            <div id="modelHistory" class="table-container">
+                <div class="loading">Loading model history...</div>
+            </div>
+        </section>
+
+        <!-- Analysis Reports -->
+        <section class="card">
+            <h2>Analysis Reports</h2>
+            <div id="analysisReports" class="reports-list">
+                <div class="loading">Loading analysis reports...</div>
+            </div>
+        </section>
+
+        <!-- Logs Viewer -->
+        <section class="card">
+            <h2>Recent Logs</h2>
+            <div id="logsViewer" class="logs-container">
+                <div class="loading">Loading logs...</div>
+            </div>
+        </section>
+
+        <!-- Manual Task Runner (Localhost only) -->
+        {% if is_localhost %}
+        <section class="card">
+            <h2>Manual Task Runner</h2>
+            <div class="task-runner">
+                <select id="taskSelect">
+                    <option value="fetch_data">Fetch Data</option>
+                    <option value="sentiment">Get Sentiment</option>
+                    <option value="predict_and_trade">Predict & Trade</option>
+                    <option value="sell_position">Sell Position</option>
+                    <option value="record_results">Record Results</option>
+                    <option value="self_improve">Self Improve</option>
+                    <option value="self_analyze">Self Analyze</option>
+                </select>
+                <button id="runTaskBtn" class="btn btn-primary">Run Task</button>
+                <div id="taskOutput" class="task-output"></div>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    <!-- Modal for viewing details -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+

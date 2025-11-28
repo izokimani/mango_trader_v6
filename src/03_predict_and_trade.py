@@ -11,7 +11,7 @@ from alpaca.trade.enums import OrderSide, TimeInForce
 from dotenv import load_dotenv
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from src.utils import COINS, get_db_connection, get_utc_now, format_date, get_logger
+from src.utils import COINS, get_db_connection, get_utc_now, format_date, get_logger, init_database
 
 # Import the scorer dynamically
 import importlib.util
@@ -129,6 +129,7 @@ def execute_trade(coin, client):
 
 def record_prediction(coin, score, all_scores):
     """Record the prediction in database"""
+    init_database()
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -160,6 +161,9 @@ def record_prediction(coin, score, all_scores):
 def main():
     """Main function"""
     logger.info(f"Running prediction and trade at {get_utc_now()}")
+    
+    # Initialize database first
+    init_database()
     
     # Load data
     price_data, sentiment_data = load_data()

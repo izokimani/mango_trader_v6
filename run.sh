@@ -4,34 +4,47 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
+# Activate virtual environment if it exists
+if [ -d "venv" ]; then
+    source venv/bin/activate
+fi
+
 # Load environment variables
-export $(cat secrets.env | grep -v '^#' | xargs)
+if [ -f "secrets.env" ]; then
+    export $(cat secrets.env | grep -v '^#' | xargs)
+fi
+
+# Determine Python command
+PYTHON_CMD="python3"
+if command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+fi
 
 # Run the specified module
 case "$1" in
     fetch_data)
-        python src/01_fetch_data.py
+        $PYTHON_CMD src/01_fetch_data.py
         ;;
     sentiment)
-        python src/02_sentiment.py
+        $PYTHON_CMD src/02_sentiment.py
         ;;
     predict_and_trade)
-        python src/03_predict_and_trade.py
+        $PYTHON_CMD src/03_predict_and_trade.py
         ;;
     sell_position)
-        python src/06_sell_position.py
+        $PYTHON_CMD src/06_sell_position.py
         ;;
     record_results)
-        python src/04_record_results.py
+        $PYTHON_CMD src/04_record_results.py
         ;;
     self_improve)
-        python src/05_self_improve.py
+        $PYTHON_CMD src/05_self_improve.py
         ;;
     self_analyze)
-        python src/07_self_analyze.py
+        $PYTHON_CMD src/07_self_analyze.py
         ;;
     backtest)
-        python backtest.py
+        $PYTHON_CMD backtest.py
         ;;
     *)
         echo "Usage: $0 {fetch_data|sentiment|predict_and_trade|sell_position|record_results|self_improve|self_analyze|backtest}"

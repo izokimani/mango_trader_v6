@@ -22,6 +22,7 @@ logger = get_logger('self_improve')
 
 def get_yesterday_trade_data():
     """Get yesterday's trade data from database"""
+    init_database()
     conn = get_db_connection()
     cursor = conn.cursor()
     

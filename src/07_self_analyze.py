@@ -13,7 +13,7 @@ import json
 import glob
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from src.utils import get_db_connection, get_utc_now, format_date, get_logger, COINS
+from src.utils import get_db_connection, get_utc_now, format_date, get_logger, COINS, init_database
 
 if os.path.exists('secrets.env'):
     load_dotenv('secrets.env')
@@ -50,6 +50,8 @@ def read_recent_logs(days=7):
 
 def analyze_performance_metrics():
     """Analyze performance from database"""
+    # Ensure database is initialized
+    init_database()
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -263,6 +265,13 @@ def check_system_health():
     logger.info("Checking system health...")
     
     issues = []
+    
+    # Initialize database first
+    try:
+        init_database()
+    except Exception as e:
+        issues.append(f"Database initialization error: {e}")
+        logger.error(f"Database initialization failed: {e}")
     
     # Check database
     try:

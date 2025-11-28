@@ -5,7 +5,7 @@ Runs at 23:50 UTC daily
 import os
 import sys
 from datetime import datetime, timedelta
-from polygon import RESTClient
+from polygon.rest import RESTClient
 from dotenv import load_dotenv
 import pandas as pd
 import json

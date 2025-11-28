@@ -5,7 +5,7 @@ Runs at 23:52 UTC daily
 import os
 import sys
 from datetime import datetime, timedelta
-from polygon import RESTClient
+from polygon.rest import RESTClient
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
